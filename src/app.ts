@@ -1,43 +1,60 @@
 import createError from 'http-errors';
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction, Application } from "express";
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import indexRouter from './routes/index';
-// var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
+import { controllerType } from './models/contoller.type';
 
-var app = express();
+export default class App {
+  private app: Application;
+  private PORT: number = 3000;
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+  constructor(controllers: controllerType[], port?: number) {
+    this.app = express();
+    port && (this.PORT = port);
+    this.config();
+    this.initializeRouteControllers(controllers);
+    this.registerErrorHandlers();
+  }
+  private config(): void {
+    this.app.set('views', path.join(__dirname, 'views'));
+    this.app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+    this.app.use(logger('dev'));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(cookieParser());
+    this.app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+  }
+  private initializeRouteControllers(routes: any[]) {
+    routes.forEach(route => {
+      console.log(route.controller.router);
+      this.app.use(route.path, route.controller.router)
+    });
+  }
+  private registerErrorHandlers(): void {
+    // catch 404 and forward to error handler
+    this.app.use(function (req, res, next) {
+      next(createError(404));
+    });
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+    // error handler
+    this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+      // set locals, only providing error in development
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-app.listen(3000, () => console.log('server started !'));
-
-// module.exports = app;
+      // render the error page
+      res.status(err.status || 500);
+      res.render('error');
+    });
+  }
+  public startServer(): void {
+    if (this.app) {
+      this.app.listen(this.PORT, () => console.log(`Server started at ${this.PORT}`));
+    } else {
+      console.log('Express is not initialized !');
+    }
+  }
+}

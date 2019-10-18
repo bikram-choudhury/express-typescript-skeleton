@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node dist/app.js",
-    "dev-start": "nodemon src/app.ts",
+    "dev-start": "nodemon src/server.ts",
     "build": "tsc -p ."
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/node": "^12.11.1",
     "nodemon": "^1.19.4",
     "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
     "typescript": "^3.6.4"
   }
 }
