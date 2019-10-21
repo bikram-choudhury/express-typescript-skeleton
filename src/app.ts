@@ -28,10 +28,7 @@ export default class App {
 
   }
   private initializeRouteControllers(routes: any[]) {
-    routes.forEach(route => {
-      console.log(route.controller.router);
-      this.app.use(route.path, route.controller.router)
-    });
+    routes.forEach(route => this.app.use(route.path, route.controller.router));
   }
   private registerErrorHandlers(): void {
     // catch 404 and forward to error handler
