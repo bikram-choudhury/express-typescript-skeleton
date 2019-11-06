@@ -4,17 +4,29 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import { controllerType } from './models/contoller.type';
+import mongoose, { connect } from 'mongoose';
 
 export default class App {
   private app: Application;
   private PORT: number = 3000;
 
   constructor(controllers: controllerType[], port?: number) {
+    this.connectAppToDB();
     this.app = express();
     port && (this.PORT = port);
     this.config();
     this.initializeRouteControllers(controllers);
     this.registerErrorHandlers();
+  }
+  private connectAppToDB() {
+    if (process.env && process.env.NODE_ENV && process.env.NODE_ENV === 'production') {
+      connect('mongodb://<username>:<password>@ds263856.mlab.com:63856/<mongodb-name>', (err: any) => {
+        if (err) throw new Error(err);
+        console.log("Connected successfully");
+      });
+    } else {
+      connect('mongodb://localhost:27017/userposts');
+    }
   }
   private config(): void {
     this.app.set('views', path.join(__dirname, 'views'));

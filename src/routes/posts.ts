@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import fetch from 'node-fetch';
-
+import { postType } from '../models/post.type';
+import POST from '../schemas/posts';
 
 export default class PostController {
     private path: string = '/';
@@ -22,7 +23,20 @@ export default class PostController {
         const postsApi = `${this.ApiHost}/posts${postid? `/${postid}`: ''}${userid ? `?userId=${userid}`: ''}`;
         fetch(postsApi)
         .then(res => res.json())
-        .then(json => response.json(json))
-        
+        .then(postData => this.insertPostDataIntoDB(response, postData))
+    }
+    private insertPostDataIntoDB(response: Response, posts: (postType[] | postType)){
+        if(posts instanceof Array) {
+            POST.insertMany(posts, (error, docs) => {
+                if(error) response.send(error);
+                else response.json(docs);
+            });
+        } else {
+            const post = new POST(posts);
+            post.save((error, doc) => {
+                if(error) response.send(error);
+                else response.json(doc);
+            });
+        }
     }
 }
