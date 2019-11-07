@@ -1,11 +1,74 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %> with Typescript</p>
-  </body>
+
+<head>
+  <title>
+    <%= title %>
+  </title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>Welcome to
+    <%= title %> with Typescript</p>
+
+  <fieldset>
+    <caption>Post Request</caption>
+
+    <br />
+    <br />
+    <hr />
+
+    <br />
+    <br />
+
+    <form action="/" method="POST">
+      <label>Name: </label>
+      <input type="text" name="name" id="name" value="<%= user && user.name || '' %>" /> &ensp;
+      <label>UserName: </label>
+      <input type="text" name="username" id="username" value="<%= user && user.username || '' %>" /> &ensp;
+      <label>password: </label>
+      <input type="password" name="password" id="pass" value="<%= user && user.password || '' %>" />
+
+      <input type="submit" value="Submit">
+    </form>
+
+    <br />
+    <br />
+    <br />
+
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>UserName</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr>
+            <td>
+              <%= user.name %>
+            </td>
+            <td>
+              <%= user.username %>
+            </td>
+            <td>
+              <%= user.email %>
+            </td>
+            <td>
+              <a href="edit/<%= user.username %>">Edit</a>
+            </td>
+          </tr>
+          <% }) %>
+      </tbody>
+    </table>
+  </fieldset>
+</body>
+
 </html>

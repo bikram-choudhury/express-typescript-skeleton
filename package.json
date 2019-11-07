@@ -8,9 +8,11 @@
     "build": "tsc -p ."
   },
   "dependencies": {
+    "@types/async": "^3.0.3",
     "@types/mongoose": "^5.5.29",
     "@types/morgan": "^1.7.37",
     "@types/node-fetch": "^2.5.3",
+    "async": "^3.1.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
